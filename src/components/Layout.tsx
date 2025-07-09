@@ -40,6 +40,12 @@ const Layout: React.FC = () => {
                   사용자 목록
                 </Link>
                 <Link
+                  to="/chat"
+                  className="nav-link"
+                >
+                  채팅
+                </Link>
+                <Link
                   to="/profile"
                   className="nav-link"
                 >

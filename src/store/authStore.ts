@@ -20,6 +20,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       
       login: (user: User, token: string) => {
+        console.log('Login called with token:', token ? token.substring(0, 20) + '...' : 'No token');
         set({
           user,
           token,
@@ -27,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
         });
         localStorage.setItem('access_token', token);
         localStorage.setItem('user', JSON.stringify(user));
+        console.log('Token saved to localStorage');
       },
       
       logout: () => {
@@ -45,21 +47,29 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initializeAuth: () => {
+        console.log('initializeAuth called');
         const token = localStorage.getItem('access_token');
         const userStr = localStorage.getItem('user');
+        
+        console.log('initializeAuth - token exists:', !!token);
+        console.log('initializeAuth - user exists:', !!userStr);
         
         if (token && userStr) {
           try {
             const user = JSON.parse(userStr);
+            console.log('initializeAuth - setting auth state with user:', user);
             set({
               user,
               token,
               isAuthenticated: true,
             });
+            console.log('initializeAuth - auth state set successfully');
           } catch (error) {
             console.error('Failed to parse user data:', error);
             get().logout();
           }
+        } else {
+          console.log('initializeAuth - no token or user found, staying logged out');
         }
       },
     }),

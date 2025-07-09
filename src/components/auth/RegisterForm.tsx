@@ -10,6 +10,7 @@ const RegisterForm: React.FC = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSuccess, setIsSuccess] = useState(false);
   
   const { register, isLoading, error } = useAuth();
   const navigate = useNavigate();
@@ -63,7 +64,12 @@ const RegisterForm: React.FC = () => {
     
     register(registerData, {
       onSuccess: () => {
-        navigate('/');
+        // 회원가입 성공 메시지 표시
+        setIsSuccess(true);
+        // 2초 후 로그인 페이지로 이동
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       },
       onError: (error: any) => {
         console.error('Register error:', error);
@@ -99,7 +105,7 @@ const RegisterForm: React.FC = () => {
                 id="name"
                 name="name"
                 type="text"
-                autoComplete="name"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.name ? 'border-red-300' : ''}`}
                 placeholder="이름"
@@ -119,7 +125,7 @@ const RegisterForm: React.FC = () => {
                 id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.email ? 'border-red-300' : ''}`}
                 placeholder="이메일"
@@ -139,7 +145,7 @@ const RegisterForm: React.FC = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.password ? 'border-red-300' : ''}`}
                 placeholder="비밀번호"
@@ -159,7 +165,7 @@ const RegisterForm: React.FC = () => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.confirmPassword ? 'border-red-300' : ''}`}
                 placeholder="비밀번호 확인"
@@ -180,13 +186,21 @@ const RegisterForm: React.FC = () => {
             </div>
           )}
 
+          {isSuccess && (
+            <div className="bg-green-50 p-4 rounded-md">
+              <div className="text-sm text-green-700">
+                회원가입이 완료되었습니다! 잠시 후 로그인 페이지로 이동합니다.
+              </div>
+            </div>
+          )}
+
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isSuccess}
               className="btn btn-primary w-full disabled:opacity-50"
             >
-              {isLoading ? '회원가입 중...' : '회원가입'}
+              {isLoading ? '회원가입 중...' : isSuccess ? '회원가입 완료!' : '회원가입'}
             </button>
           </div>
         </form>

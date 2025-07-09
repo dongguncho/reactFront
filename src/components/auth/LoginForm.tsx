@@ -45,7 +45,7 @@ const LoginForm: React.FC = () => {
     
     login(formData, {
       onSuccess: () => {
-        navigate('/');
+        navigate('/chat');
       },
       onError: (error: any) => {
         console.error('Login error:', error);
@@ -81,7 +81,7 @@ const LoginForm: React.FC = () => {
                 id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.email ? 'border-red-300' : ''}`}
                 placeholder="이메일"
@@ -100,7 +100,7 @@ const LoginForm: React.FC = () => {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="off"
                 required
                 className={`form-input ${errors.password ? 'border-red-300' : ''}`}
                 placeholder="비밀번호"

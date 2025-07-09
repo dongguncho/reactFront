@@ -8,6 +8,7 @@ import LoginForm from './components/auth/LoginForm';
 import RegisterForm from './components/auth/RegisterForm';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
+import Chat from './pages/Chat';
 import { useAuthStore } from './store/authStore';
 
 // React Query 클라이언트 생성
@@ -22,9 +23,14 @@ const queryClient = new QueryClient({
 
 // 인증이 필요한 라우트를 위한 컴포넌트
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
+  
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated);
+  console.log('ProtectedRoute - user:', user);
+  console.log('ProtectedRoute - localStorage token:', localStorage.getItem('access_token') ? 'exists' : 'not found');
   
   if (!isAuthenticated) {
+    console.log('ProtectedRoute - Redirecting to login');
     return <Navigate to="/login" replace />;
   }
   
@@ -43,12 +49,18 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 function App() {
-  const { initializeAuth } = useAuthStore();
+  const { initializeAuth, isAuthenticated } = useAuthStore();
 
   // 앱 시작 시 인증 상태 초기화
   useEffect(() => {
+    console.log('App - Initializing auth...');
     initializeAuth();
   }, [initializeAuth]);
+
+  // 인증 상태 변화 추적
+  useEffect(() => {
+    console.log('App - Auth state changed:', isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -85,6 +97,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="chat" element={<Chat />} />
             </Route>
             
             {/* 기본 리다이렉트 */}
