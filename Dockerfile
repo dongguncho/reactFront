@@ -1,26 +1,8 @@
-# Node.js 18 베이스 이미지
-FROM node:18-alpine
-
-# 작업 디렉토리 설정
-WORKDIR /app
-
-# package.json과 package-lock.json 복사
-COPY package*.json ./
-
-# 의존성 설치
-RUN npm ci --only=production
-
-# 소스 코드 복사
-COPY . .
-
-# 애플리케이션 빌드
-RUN npm run build
-
-# Nginx 설치
+# Nginx 베이스 이미지
 FROM nginx:alpine
 
 # 빌드된 파일을 Nginx로 복사
-COPY --from=0 /app/build /usr/share/nginx/html
+COPY build/ /usr/share/nginx/html
 
 # Nginx 설정 복사
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -29,4 +11,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 # Nginx 실행
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
